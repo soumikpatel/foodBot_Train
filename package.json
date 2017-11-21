@@ -1,0 +1,23 @@
+{
+  "name": "foodbot_train",
+  "version": "1.0.0",
+  "description": "This is my Food Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soumikpatel/foodBot_Train.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/soumikpatel/foodBot_Train/issues"
+  },
+  "homepage": "https://github.com/soumikpatel/foodBot_Train#readme",
+  "dependencies": {
+    "botbuilder": "^3.12.0",
+    "restify": "^6.3.4"
+  }
+}
