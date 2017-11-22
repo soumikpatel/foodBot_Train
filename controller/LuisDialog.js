@@ -1,4 +1,5 @@
 var builder = require('botbuilder');
+var food = require("./FavouriteFoods");
 // Some sections have been omitted
 
 exports.startDialog = function(bot) {
@@ -16,10 +17,26 @@ exports.startDialog = function(bot) {
 
 
 
-    bot.dialog('GetFavouriteFood', function(session, args) {
-        session.send("GetFavouriteFood intent found");
+    bot.dialog('GetFavouriteFood', [
+        function(session, args, next) {
+            session.dialogData.args = args || {};
+            if (!session.conversationData["username"]) {
+                builder.Prompts.text(session, "Enter a username to setup your account.");
+            } else {
+                next(); // Skip if we already have this info.
+            }
+        },
+        function(session, results, next) {
 
-    }).triggerAction({
+            if (results.response) {
+                session.conversationData["username"] = results.response;
+            }
+
+            session.send("Retrieving your favourite foods");
+            food.displayFavouriteFood(session, session.conversationData["username"]); // <---- THIS LINE HERE IS WHAT WE NEED 
+        }
+
+    ]).triggerAction({
         matches: 'GetFavouriteFood'
     });
 
@@ -48,5 +65,14 @@ exports.startDialog = function(bot) {
 
     }).triggerAction({
         matches: 'WelcomeIntent'
+    });
+
+
+
+    bot.dialog('Username', function(session, args) {
+        session.send("Username intent found");
+
+    }).triggerAction({
+        matches: 'Username'
     });
 }
