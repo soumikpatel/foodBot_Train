@@ -1,5 +1,8 @@
 var builder = require('botbuilder');
 var food = require("./FavouriteFoods");
+var restaurant = require('./RestaurantCard');
+var nutrition = require('./NutritionCard');
+
 // Some sections have been omitted
 
 exports.startDialog = function(bot) {
@@ -9,11 +12,25 @@ exports.startDialog = function(bot) {
     bot.recognizer(recognizer);
 
     bot.dialog('GetCalories', function(session, args) {
-        session.send("GetCalories intent found");
+
+
+        // Pulls out the food entity from the session if it exists
+        var foodEntity = builder.EntityRecognizer.findEntity(args.intent.entities, 'food');
+
+        // Checks if the for entity was found
+        if (foodEntity) {
+            session.send('Calculating calories in %s...', foodEntity.entity);
+            nutrition.displayNutritionCards(foodEntity.entity, session);
+
+        } else {
+            session.send("No food identified! Please try again");
+        }
 
     }).triggerAction({
         matches: 'GetCalories'
     });
+
+
 
 
 
@@ -42,6 +59,8 @@ exports.startDialog = function(bot) {
 
 
 
+
+
     bot.dialog('LookForFavourite', function(session, args) {
         session.send("LookForFavourite intent found");
 
@@ -51,8 +70,18 @@ exports.startDialog = function(bot) {
 
 
 
+
     bot.dialog('WantFood', function(session, args) {
-        session.send("WantFood intent found");
+        // Pulls out the food entity from the session if it exists
+        var foodEntity = builder.EntityRecognizer.findEntity(args.intent.entities, 'food');
+
+        // Checks if the for entity was found
+        if (foodEntity) {
+            session.send('Looking for restaurants which sell %s...', foodEntity.entity);
+            restaurant.displayRestaurantCards(foodEntity.entity, "auckland", session);
+        } else {
+            session.send("No food identified! Please try again");
+        }
 
     }).triggerAction({
         matches: 'WantFood'
@@ -60,12 +89,16 @@ exports.startDialog = function(bot) {
 
 
 
+
+
     bot.dialog('WelcomeIntent', function(session, args) {
-        session.send("WelcomeIntent intent found");
+        session.send("Hello there! How may I help you today?");
 
     }).triggerAction({
         matches: 'WelcomeIntent'
     });
+
+
 
 
 
