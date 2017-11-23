@@ -11,6 +11,19 @@ exports.startDialog = function(bot) {
 
     bot.recognizer(recognizer);
 
+
+    function isAttachment(session) {
+        var msg = session.message.text;
+        if ((session.message.attachments && session.message.attachments.length > 0) || msg.includes("http")) {
+            //call custom vision
+            customVision.retreiveMessage(session);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     bot.dialog('GetCalories', function(session, args) {
 
 
