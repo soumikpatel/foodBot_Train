@@ -124,8 +124,6 @@ exports.startDialog = function(bot) {
             } else {
                 session.send("No food identified! Please try again");
             }
-
-
         }
     ]).triggerAction({
         matches: 'DeleteFavourite'

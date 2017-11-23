@@ -38,7 +38,7 @@ function handleFavouriteFoodResponse(message, session, username) {
 
 /* DELETE FAVOURITE FOOD*/
 exports.deleteFavouriteFood = function deleteFavouriteFood(session, username, favouriteFood) {
-    var url = 'https://foodbotmsa.azurewebsites.net/tables/FoodBot';
+    var url = 'http://foodbot-spt491.azurewebsites.net/tables/foodbot';
 
 
     rest.getFavouriteFood(url, session, username, function(message, session, username) {
