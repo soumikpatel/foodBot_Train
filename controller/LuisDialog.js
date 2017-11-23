@@ -83,7 +83,6 @@ exports.startDialog = function(bot) {
             if (foodEntity) {
                 session.send('Thanks for telling me that \'%s\' is your favourite food', foodEntity.entity);
                 food.sendFavouriteFood(session, session.conversationData["username"], foodEntity.entity); // <-- LINE WE WANT
-
             } else {
                 session.send("No food identified!!!");
             }
@@ -121,6 +120,7 @@ exports.startDialog = function(bot) {
             if (foodEntity) {
                 session.send('Deleting \'%s\'...', foodEntity.entity);
                 food.deleteFavouriteFood(session, session.conversationData['username'], foodEntity.entity); //<--- CALLL WE WANT
+
             } else {
                 session.send("No food identified! Please try again");
             }
