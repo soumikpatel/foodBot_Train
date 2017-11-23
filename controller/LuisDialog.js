@@ -26,17 +26,18 @@ exports.startDialog = function(bot) {
 
     bot.dialog('GetCalories', function(session, args) {
 
+        if (!isAttachment(session)) {
+            // Pulls out the food entity from the session if it exists
+            var foodEntity = builder.EntityRecognizer.findEntity(args.intent.entities, 'food');
 
-        // Pulls out the food entity from the session if it exists
-        var foodEntity = builder.EntityRecognizer.findEntity(args.intent.entities, 'food');
+            // Checks if the for entity was found
+            if (foodEntity) {
+                session.send('Calculating calories in %s...', foodEntity.entity);
+                nutrition.displayNutritionCards(foodEntity.entity, session);
 
-        // Checks if the for entity was found
-        if (foodEntity) {
-            session.send('Calculating calories in %s...', foodEntity.entity);
-            nutrition.displayNutritionCards(foodEntity.entity, session);
-
-        } else {
-            session.send("No food identified! Please try again");
+            } else {
+                session.send("No food identified! Please try again");
+            }
         }
 
     }).triggerAction({
@@ -57,13 +58,14 @@ exports.startDialog = function(bot) {
             }
         },
         function(session, results, next) {
+            if (!isAttachment(session)) {
+                if (results.response) {
+                    session.conversationData["username"] = results.response;
+                }
 
-            if (results.response) {
-                session.conversationData["username"] = results.response;
+                session.send("Retrieving your favourite foods");
+                food.displayFavouriteFood(session, session.conversationData["username"]); // <---- THIS LINE HERE IS WHAT WE NEED 
             }
-
-            session.send("Retrieving your favourite foods");
-            food.displayFavouriteFood(session, session.conversationData["username"]); // <---- THIS LINE HERE IS WHAT WE NEED 
         }
 
     ]).triggerAction({
@@ -85,19 +87,20 @@ exports.startDialog = function(bot) {
         },
         function(session, results, next) {
 
+            if (!isAttachment(session)) {
+                if (results.response) {
+                    session.conversationData["username"] = results.response;
+                }
+                // Pulls out the food entity from the session if it exists
+                var foodEntity = builder.EntityRecognizer.findEntity(session.dialogData.args.intent.entities, 'food');
 
-            if (results.response) {
-                session.conversationData["username"] = results.response;
-            }
-            // Pulls out the food entity from the session if it exists
-            var foodEntity = builder.EntityRecognizer.findEntity(session.dialogData.args.intent.entities, 'food');
-
-            // Checks if the food entity was found
-            if (foodEntity) {
-                session.send('Thanks for telling me that \'%s\' is your favourite food', foodEntity.entity);
-                food.sendFavouriteFood(session, session.conversationData["username"], foodEntity.entity); // <-- LINE WE WANT
-            } else {
-                session.send("No food identified!!!");
+                // Checks if the food entity was found
+                if (foodEntity) {
+                    session.send('Thanks for telling me that \'%s\' is your favourite food', foodEntity.entity);
+                    food.sendFavouriteFood(session, session.conversationData["username"], foodEntity.entity); // <-- LINE WE WANT
+                } else {
+                    session.send("No food identified!!!");
+                }
             }
         }
 
